@@ -18,7 +18,10 @@ const syncUser = inngest.createFunction(
             profileImage : image_url,
         }
         await User.create(newUser)
-
+        //for check
+        console.log("Function triggered");
+        console.log("DB:", mongoose.connection.db.databaseName);
+        console.log("State:", mongoose.connection.readyState);
         //todo : do sth else
     }
 ) 
