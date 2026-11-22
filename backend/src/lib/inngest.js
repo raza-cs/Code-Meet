@@ -1,7 +1,7 @@
 import {Inngest} from "inngest";
 import {connectDB} from "./db.js";
 import User from "../models/Users.js";
-
+import {mongoose} from "mongoose";
 export const inngest = new Inngest({id : "code-meet"});
 
 const syncUser = inngest.createFunction(
