@@ -1,7 +1,7 @@
 import {Inngest} from "inngest";
 import {connectDB} from "./db.js";
 import User from "../models/Users.js";
-import {mongoose} from "mongoose";
+import { deleteStreamUser, upsertStreamUser } from "./stream.js";
 export const inngest = new Inngest({id : "code-meet"});
 
 const syncUser = inngest.createFunction(
@@ -17,17 +17,14 @@ const syncUser = inngest.createFunction(
             name : `${first_name|| ""} ${last_name|| ""}`,
             profileImage : image_url,
         }
-        console.log("before create ");
-        const user = await User.create(newUser)
+        await User.create(newUser)
 
-        //for insertion 
-        console.log("After create");
-        console.log(user);
-        //for check
-        console.log("Function triggered");
-        console.log("DB:", mongoose.connection.db.databaseName);
-        console.log("State:", mongoose.connection.readyState);
-        //todo : do sth else
+        
+        await upsertStreamUser({
+            id : newUser.clerkId.tostring(),
+            name : newUser.name,
+            image : newUser.profileImage,
+        });
     }
 ) 
 
@@ -40,7 +37,7 @@ const deletUserFromDb = inngest.createFunction(
         const {id} = event.data;
         await User.deleteOne({clerkId : id});
 
-        //todo : do sth else
+        await deleteStreamUser(id.toString());
     }
 ) 
 
