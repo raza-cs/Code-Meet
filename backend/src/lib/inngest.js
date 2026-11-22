@@ -17,14 +17,17 @@ const syncUser = inngest.createFunction(
             name : `${first_name|| ""} ${last_name|| ""}`,
             profileImage : image_url,
         }
-        await User.create(newUser)
+
+        const createdUser = await User.create(newUser);
+        console.log("Mongo user created:", createdUser);
 
         
         await upsertStreamUser({
-            id : newUser.clerkId.tostring(),
+            id : newUser.clerkId.toString(),
             name : newUser.name,
             image : newUser.profileImage,
         });
+        console.log("Stream user created");
     }
 ) 
 
